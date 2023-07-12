@@ -1,4 +1,4 @@
-package com.hjysite;
+package com.hjysite.tree.btree.example;
 
 import java.lang.*;
 import java.util.*;
@@ -133,6 +133,15 @@ public class BPlusTree {
         // Borrow:
         else if (in.leftSibling != null && in.leftSibling.isLendable()) {
             sibling = in.leftSibling;
+
+            // Copy 1 key and pointer from sibling (atm just 1 key)
+            int borrowedKey = sibling.keys[sibling.degree - 1];
+            Node pointer = sibling.childPointers[sibling.degree];
+
+            in.keys[in.degree] = borrowedKey;
+            Arrays.sort(in.keys, 0, in.degree + 1);
+            in.insertChildPointer(pointer, 0);
+
         } else if (in.rightSibling != null && in.rightSibling.isLendable()) {
             sibling = in.rightSibling;
 
@@ -674,7 +683,7 @@ public class BPlusTree {
         while (currNode != null) {
 
             // Iterate through the dictionary of each node
-            DictionaryPair dps[] = currNode.dictionary;
+            DictionaryPair[] dps = currNode.dictionary;
             for (DictionaryPair dp : dps) {
 
 				/* Stop searching the dictionary once a null value is encountered
